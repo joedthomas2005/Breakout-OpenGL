@@ -1,0 +1,25 @@
+﻿  glad.c
+  Main.cpp
+c:\users\joejo\c++\breakout-opengl\breakout-opengl\breakout-opengl\main.cpp(77): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\joejo\c++\breakout-opengl\breakout-opengl\breakout-opengl\main.cpp(78): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+Main.obj : error LNK2019: unresolved external symbol _glfwInit referenced in function _main
+Main.obj : error LNK2019: unresolved external symbol _glfwTerminate referenced in function "public: void __thiscall Window::destroy(void)" (?destroy@Window@@QAEXXZ)
+Main.obj : error LNK2019: unresolved external symbol _glfwSetErrorCallback referenced in function "public: __thiscall Window::Window(int,int,char const *,void (__cdecl*)(struct GLFWwindow *,int,int,int,int),int)" (??0Window@@QAE@HHPBDP6AXPAUGLFWwindow@@HHHH@ZH@Z)
+Main.obj : error LNK2019: unresolved external symbol _glfwWindowHint referenced in function "public: __thiscall Window::Window(int,int,char const *,void (__cdecl*)(struct GLFWwindow *,int,int,int,int),int)" (??0Window@@QAE@HHPBDP6AXPAUGLFWwindow@@HHHH@ZH@Z)
+Main.obj : error LNK2019: unresolved external symbol _glfwCreateWindow referenced in function "public: __thiscall Window::Window(int,int,char const *,void (__cdecl*)(struct GLFWwindow *,int,int,int,int),int)" (??0Window@@QAE@HHPBDP6AXPAUGLFWwindow@@HHHH@ZH@Z)
+Main.obj : error LNK2019: unresolved external symbol _glfwDestroyWindow referenced in function "public: void __thiscall Window::destroy(void)" (?destroy@Window@@QAEXXZ)
+Main.obj : error LNK2019: unresolved external symbol _glfwWindowShouldClose referenced in function "public: bool __thiscall Window::shouldClose(void)" (?shouldClose@Window@@QAE_NXZ)
+Main.obj : error LNK2019: unresolved external symbol _glfwGetFramebufferSize referenced in function "public: __thiscall Window::Window(int,int,char const *,void (__cdecl*)(struct GLFWwindow *,int,int,int,int),int)" (??0Window@@QAE@HHPBDP6AXPAUGLFWwindow@@HHHH@ZH@Z)
+Main.obj : error LNK2019: unresolved external symbol _glfwSetFramebufferSizeCallback referenced in function "public: __thiscall Window::Window(int,int,char const *,void (__cdecl*)(struct GLFWwindow *,int,int,int,int),int)" (??0Window@@QAE@HHPBDP6AXPAUGLFWwindow@@HHHH@ZH@Z)
+Main.obj : error LNK2019: unresolved external symbol _glfwPollEvents referenced in function "public: void __thiscall Window::update(void)" (?update@Window@@QAEXXZ)
+Main.obj : error LNK2019: unresolved external symbol _glfwSetKeyCallback referenced in function "public: __thiscall Keys::Keys(struct GLFWwindow *)" (??0Keys@@QAE@PAUGLFWwindow@@@Z)
+Main.obj : error LNK2019: unresolved external symbol _glfwJoystickPresent referenced in function "public: void __thiscall Keys::checkGamePadInput(void)" (?checkGamePadInput@Keys@@QAEXXZ)
+Main.obj : error LNK2019: unresolved external symbol _glfwGetJoystickAxes referenced in function "public: void __thiscall Keys::checkGamePadInput(void)" (?checkGamePadInput@Keys@@QAEXXZ)
+Main.obj : error LNK2019: unresolved external symbol _glfwGetJoystickButtons referenced in function "public: void __thiscall Keys::checkGamePadInput(void)" (?checkGamePadInput@Keys@@QAEXXZ)
+Main.obj : error LNK2019: unresolved external symbol _glfwGetTime referenced in function _main
+Main.obj : error LNK2019: unresolved external symbol _glfwMakeContextCurrent referenced in function "public: __thiscall Window::Window(int,int,char const *,void (__cdecl*)(struct GLFWwindow *,int,int,int,int),int)" (??0Window@@QAE@HHPBDP6AXPAUGLFWwindow@@HHHH@ZH@Z)
+Main.obj : error LNK2019: unresolved external symbol _glfwSwapBuffers referenced in function "public: void __thiscall Window::update(void)" (?update@Window@@QAEXXZ)
+Main.obj : error LNK2019: unresolved external symbol _glfwSwapInterval referenced in function "public: __thiscall Window::Window(int,int,char const *,void (__cdecl*)(struct GLFWwindow *,int,int,int,int),int)" (??0Window@@QAE@HHPBDP6AXPAUGLFWwindow@@HHHH@ZH@Z)
+Main.obj : error LNK2019: unresolved external symbol _glfwGetProcAddress referenced in function _main
+C:\Users\JoeJo\C++\Breakout-OpenGL\Breakout-OpenGL\Breakout-OpenGL\\Libraries\lib\glfw3.lib : warning LNK4272: library machine type 'x64' conflicts with target machine type 'x86'
+C:\Users\JoeJo\C++\Breakout-OpenGL\Breakout-OpenGL\Debug\Breakout-OpenGL.exe : fatal error LNK1120: 19 unresolved externals

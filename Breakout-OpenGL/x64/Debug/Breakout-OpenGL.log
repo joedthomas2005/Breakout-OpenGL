@@ -1,0 +1,5 @@
+﻿  glad.c
+  Main.cpp
+c:\users\joejo\c++\breakout-opengl\breakout-opengl\breakout-opengl\main.cpp(77): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\joejo\c++\breakout-opengl\breakout-opengl\breakout-opengl\main.cpp(78): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  Breakout-OpenGL.vcxproj -> C:\Users\JoeJo\C++\Breakout-OpenGL\Breakout-OpenGL\x64\Debug\Breakout-OpenGL.exe
