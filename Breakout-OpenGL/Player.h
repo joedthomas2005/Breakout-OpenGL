@@ -2,9 +2,9 @@
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
 
-int* playerIndices;
-int playerIndicesLength;
-int playerVertLength;
+int* rectIndices;
+int rectIndicesLength;
+int rectVertLength;
 class Player : public GameObject{
 	private:
 		Keys* KeyBoardIO;
@@ -13,8 +13,7 @@ class Player : public GameObject{
 	public:
 		float getWidth();
 		float getHeight();
-		void move(float x, float y);
-		Player(float x, float y, float color[3], float width, float height, Keys *KeyBoardIO);
+		Player(float x, float y, float width, float height, Keys *KeyBoardIO);
 		~Player();
 		void update(ShaderMan shader);
 };
@@ -22,16 +21,9 @@ class Player : public GameObject{
 Player::~Player() {
 	
 }
-void Player::move(float x, float y) {
-	this->x += x;
-	this->y += y;
-};
 
-Player::Player(float x, float y, float color[3], float width, float height, Keys *KeyBoardIO) : GameObject(x, y){
+Player::Player(float x, float y, float width, float height, Keys *KeyBoardIO) : GameObject(x, y){
 	type = 1;
-	for (int i = 0; i < playerIndicesLength; i++) {
-		//indices[i] = playerIndices[i];
-	}
 	this->width = width;
 	this->height = height;
 	this->KeyBoardIO = KeyBoardIO;
