@@ -55,28 +55,28 @@ void Keys::checkGamePadInput() {
 	gamePadPresent = glfwJoystickPresent(GLFW_JOYSTICK_2);
 	
 	if (gamePadPresent) {
-		//std::cout << "GAMEPAD CONNECTED NAME " << glfwGetJoystickName(GLFW_JOYSTICK_2) << std::endl;
+		////std::cout << "GAMEPAD CONNECTED NAME " << glfwGetJoystickName(GLFW_JOYSTICK_2) << std::endl;
 		
 		const float* axisValues = glfwGetJoystickAxes(GLFW_JOYSTICK_2, &gamePadAxisCount);
-		std::cout << "LAST AXIS VALUE " << leftJSlastValue << " CURRENT AXIS VALUE " << axisValues[0] << std::endl;
+		//std::cout << "LAST AXIS VALUE " << leftJSlastValue << " CURRENT AXIS VALUE " << axisValues[0] << std::endl;
 		
 		if (axisValues[0] > 0.2f && !(leftJSlastValue > 0.2f)) {
-			std::cout << "RIGHT PRESSED" << std::endl;
+			//std::cout << "RIGHT PRESSED" << std::endl;
 			keys[RIGHT] = true;
 		}
 
 		else if (leftJSlastValue > 0.2f && !(axisValues[0] > 0.2f)) {
-			std::cout << "RIGHT RELEASED" << std::endl;
+			//std::cout << "RIGHT RELEASED" << std::endl;
 			keys[RIGHT] = false; 
 		}
 
 
 		if (axisValues[0] < -0.2f && !(leftJSlastValue < -0.2f)) {
-			std::cout << "LEFT PRESSED" << std::endl;
+			//std::cout << "LEFT PRESSED" << std::endl;
 			keys[LEFT] = true;
 		}
 		else if (leftJSlastValue < -0.2f && !(axisValues[0] < -0.2f)) {
-			std::cout << "LEFT RELEASED" << std::endl;
+			//std::cout << "LEFT RELEASED" << std::endl;
 			keys[LEFT] = false;
 		}
 

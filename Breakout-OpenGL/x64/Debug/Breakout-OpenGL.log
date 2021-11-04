@@ -1,4 +1,6 @@
 ﻿  Main.cpp
-c:\users\joejo\c++\breakout-opengl\breakout-opengl\breakout-opengl\main.cpp(79): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\joejo\c++\breakout-opengl\breakout-opengl\breakout-opengl\main.cpp(80): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-  Breakout-OpenGL.vcxproj -> C:\Users\JoeJo\C++\Breakout-OpenGL\Breakout-OpenGL\x64\Debug\Breakout-OpenGL.exe
+c:\users\joejo\c++\breakout-opengl\breakout-opengl\breakout-opengl\main.cpp(91): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\joejo\c++\breakout-opengl\breakout-opengl\breakout-opengl\main.cpp(92): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\joejo\c++\breakout-opengl\breakout-opengl\breakout-opengl\main.cpp(118): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\joejo\c++\breakout-opengl\breakout-opengl\breakout-opengl\main.cpp(125): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Breakout-OpenGL.vcxproj -> C:\Users\JoeJo\C++\Breakout-OpenGL\breakout-opengl\x64\Debug\Breakout-OpenGL.exe

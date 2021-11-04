@@ -1,6 +1,4 @@
-#include<iostream>
-#include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#pragma once
 #include<fstream>
 #include<string>
 #include<vector>
@@ -13,7 +11,7 @@ public:
 
 	void use();
 
-	void setVec3f(const std::string& name, float x, float y) const;
+	void setVec3f(const char* name, float x, float y) const;
 
 };
 
@@ -73,6 +71,6 @@ void ShaderMan::use() {
 	glUseProgram(ID);
 }
 
-void ShaderMan::setVec3f(const std::string& name, float x, float y) const {
-	glUniform3f(glGetUniformLocation(ID, name.c_str()), x, y, 0.0);
+void ShaderMan::setVec3f(const char* name, float x, float y) const {
+	glUniform3f(glGetUniformLocation(ID, name), x, y, 0.0);
 }

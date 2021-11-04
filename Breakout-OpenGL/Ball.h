@@ -1,3 +1,4 @@
+#pragma once
 #include<cmath>
 const double PI = atan(1) * 4;
 float sins[361] = {};
@@ -14,14 +15,15 @@ private:
 	int xMult;
 	int yMult;
 	GameObject** objects;
+	bool* deleted;
 	int maxBalls;
 	int maxBricks;
 public:
 
 	float getRadius();;
 	Ball(float x, float y, float radius, float startingAngle, float speed, GameObject** objects, int maxBalls, int maxBricks, bool* deleted);
-	~Ball();
 	void update(ShaderMan shader);
+	~Ball();
 	
 };
 
@@ -41,6 +43,9 @@ Ball::Ball(float x, float y, float radius, float startingAngle, float speed, Gam
 	this->yMult = 1;
 	this->speed = speed;
 	this->radius = radius;
+	this->maxBalls = maxBalls;
+	this->maxBricks = maxBricks;
+	this->deleted = deleted;
 	
 };
 
@@ -58,12 +63,68 @@ void Ball::update(ShaderMan shader) {
 	}
 
 	for (int i = 0; i < maxBricks + maxBalls + 1; i++) {
-		if (objects[i]->type == 1) {
-			Player* player = (Player*) objects[i];
-			if (y - radius <= player->getY() + player->getHeight() / 2 && (x < player->getX() + player->getWidth() / 2 && x > player->getX() - player->getWidth() / 2)) {
-				yMult = 0 - yMult;
-				y += player->getY() + player->getHeight() - (y - radius);
+		////std::cout << "CHECKING INDEX " << i << std::endl;
+		if (!deleted[i]) {
+			if (objects[i]->type == 1) {   //TYPE 1 = PLAYER
+				////std::cout << "CHECKING PLAYER COLLISION" << std::endl;
+				Player* player = (Player*)objects[i];
+				if (y - radius <= player->getY() + player->getHeight() / 2 && (x < player->getX() + player->getWidth() / 2 && x > player->getX() - player->getWidth() / 2)) {
+					yMult = 0 - yMult;
+					y += player->getY() + player->getHeight() - (y - radius);
 
+				}
+				//delete player;
+			}
+
+			else if (objects[i]->type == 2) {	//TYPE 2 = BRICK
+				Brick* brick = (Brick*)objects[i];
+				float brickLeft = brick->getX() - brick->getWidth() / 2;
+				float brickRight = brick->getX() + brick->getWidth() / 2;
+				float brickTop = brick->getY() + brick->getHeight() / 2;
+				float brickBottom = brick->getY() - brick->getHeight() / 2;
+
+				float ballLeft = x - radius;
+				float ballRight = x + radius;
+				float ballTop = y + radius;
+				float ballBottom = y - radius;
+				bool collisionCalculated = false;
+				if (((brickLeft < ballRight && ballRight < brickRight) || 
+					(brickLeft < ballLeft && ballLeft < brickRight)) &&
+					((brickBottom < ballTop && ballTop < brickTop) ||
+					(brickBottom < ballBottom && ballBottom < brickTop)))
+				{
+					std::cout << "BALL HIT BRICK" << std::endl;
+					if (y - radius < brick->getY() - brick->getHeight() / 2) {
+						yMult = 0 - abs(yMult);
+						collisionCalculated = true;
+					}
+					else {
+						yMult = abs(yMult);
+						collisionCalculated = true;
+					}
+					
+					if (!collisionCalculated) {
+						if (x - radius < brick->getX() - brick->getWidth() / 2) {
+							xMult = 0 - abs(xMult);
+							collisionCalculated = true;
+						}
+						else {
+							xMult = abs(xMult);
+							collisionCalculated = true;
+						}
+					}
+					brick->setActive(false);
+				}
+			}
+
+			else if (objects[i]->type == 0) {	//TYPE 0 = BALL
+				if (objects[i] != this) {
+					//std::cout << "CHECKING BALL COLLISION" << std::endl;
+					if (sqrt(pow(objects[i]->getX() - x, 2) + pow(objects[i]->getY() - y, 2)) < radius * 2) {
+						xMult = 0 - xMult;
+						yMult = 0 - yMult;
+					}
+				}
 			}
 		}
 	}

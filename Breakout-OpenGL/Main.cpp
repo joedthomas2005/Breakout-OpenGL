@@ -6,10 +6,27 @@
 #include "ShaderMan.h"
 #include "GameObject.h"
 #include "Player.h"
-#include "Ball.h"
 #include "Brick.h"
+#include "Ball.h"
+
+
 float* genCircleVertices(float radius, int vertArrayLength, float color[3]);
 float* getRectVertices(int vertArrayLength, float width, float height, float color[3]);
+void createBrick(float x, float y, int index, GameObject** objects, bool* deleted);
+
+const float PLAYERWIDTH = 0.3f;
+const float PLAYERHEIGHT = 0.05f;
+const float BALLRADIUS = 0.03f;
+
+const float BRICKWIDTH = 0.15f;
+const float BRICKHEIGHT = 0.1f;
+
+const int MAXBALLS = 200;
+const int MAXBRICKS = 200;
+
+const int WINDOWWIDTH = 900;
+const int WINDOWHEIGHT = 800;
+
 
 int main(void)
 {
@@ -17,7 +34,7 @@ int main(void)
 	rectIndicesLength = 6;
 	rectVertLength = 24;
 
-	ballIndices = new int[108]
+	int ballIndices[108] = 
 	{ 0,1,2,
 	0,2,3,
 	0,3,4,
@@ -60,13 +77,8 @@ int main(void)
 	
 	float playerColor[3] = { 1.0f,0.0f,0.0f };
 	float ballColor[3] = { 0.0f, 1.0f, 0.0f };
-	float brickColor[3] = { 0.0f, 0.0f, 1.0f };
-	const float PLAYERWIDTH = 0.3f;
-	const float PLAYERHEIGHT = 0.05f;
-	const float BALLRADIUS = 0.03f;
+	float brickColor[3] = { 0.0f, 1.0f, 0.0f };
 
-	const float BRICKWIDTH = 0.3f;
-	const float BRICKHEIGHT = 0.2f;
 	
 	float* ballVertices = genCircleVertices(BALLRADIUS, ballVertLength, ballColor);
 	float* playerVertices = getRectVertices(rectVertLength, PLAYERWIDTH, PLAYERHEIGHT, playerColor);
@@ -84,7 +96,7 @@ int main(void)
 	}
 
 	gladLoadGL();
-	Window window = Window(900, 800, "Game", NULL, 1);
+	Window window = Window(WINDOWWIDTH, WINDOWHEIGHT, "Game", NULL, 1);
 
 	Keys* input = new Keys(window.getWindow());
 
@@ -97,44 +109,49 @@ int main(void)
 
 	ShaderMan shadingBlokeInMyComputer = ShaderMan("Shaders/vert.hlsl", "Shaders/fragShader.hlsl");
 
-	const int maxBalls = 10;
-	const int maxBricks = 10;
-	GameObject* objects[1 + maxBalls + maxBricks] = {};
+	GameObject* objects [1+MAXBRICKS+MAXBALLS];
+	bool* deleted = new bool[1 + MAXBALLS + MAXBRICKS];
+	for (int i = 0; i <= MAXBRICKS + MAXBALLS + 1; i++) {
+		deleted[i] = true;
+	}
 
-
+	int numberOfBricks = 2 / BRICKWIDTH;
+	std::cout << "DRAWING " << numberOfBricks << " BRICKS" << std::endl;
+	float emptySpace = 2.0f - BRICKWIDTH * numberOfBricks;
+	std::cout << "EMPTY SPACE " << emptySpace << std::endl;
+	float eachSpace = emptySpace / (numberOfBricks + 1);
+	std::cout << "EACH SPACE WILL BE " << eachSpace << std::endl;
+	for (float i = -1.0f + eachSpace + BRICKWIDTH/2, index = 0; i < 1.0f; i += BRICKWIDTH + eachSpace, index++) {
+		createBrick(i, 0.5f, index, objects, deleted);
+	}
 	objects[0] = new Player(0.5f, -0.9f , PLAYERWIDTH, PLAYERHEIGHT, input);
-	//objects[1] = new Ball(ballInitLocation, ballColor, BALLRADIUS, 45, 0.03f, (Player*)objects[0]);
+	deleted[0] = false;
+	//objects[1] = new Ball(0.5f, -0.8f, BALLRADIUS, 45, 0.03f, objects, MAXBALLS, MAXBRICKS, deleted);
+	//deleted[1] = false;
 	//numBalls++;
 
 
 	//int objectindex = 2;
-	bool* deleted = new bool[1 + maxBalls + maxBricks];
-	for (int i = 1; i <= maxBricks; i++) {
-		deleted[i] = false;
-	}
 
 
+	float* vertices = new float[rectVertLength + MAXBALLS * ballVertLength + MAXBRICKS * rectVertLength];
 
-	float* vertices = new float[rectVertLength + maxBalls * ballVertLength + maxBricks * rectVertLength];
-	int* indices = new int[rectIndicesLength + maxBalls * ballIndicesLength + maxBricks * rectIndicesLength];
-
-	int objectVertIndex = 0;
-	int objectIndicesIndex = 0;
+	int* indices = new int[rectIndicesLength + MAXBALLS * ballIndicesLength + MAXBRICKS * rectIndicesLength];
 
 	for (int i = 0; i < rectVertLength; i++) {
 		vertices[i] = playerVertices[i];
 	}
 
-	for (int i = 0; i < maxBalls; i++) {
+	for (int i = 0; i < MAXBALLS; i++) {
 		for (int j = 0; j < ballVertLength; j++) {
-			//std::cout << "WRITING VERTEX " << objects[1]->getVertices()[j] << " AT INDEX " << rectVertLength + i * ballVertLength + j << std::endl;
+			//std::cout << "WRITING VERTEX " << ballVertices[j] << " AT INDEX " << rectVertLength + i * ballVertLength + j << std::endl;
 			vertices[rectVertLength + i * ballVertLength + j] = ballVertices[j];
 		}
 	}
 
-	for (int i = 0; i < maxBricks; i++) {
+	for (int i = 0; i < MAXBRICKS; i++) {
 		for (int j = 0; j < rectVertLength; j++) {
-			vertices[rectVertLength + maxBalls * ballVertLength + i * rectVertLength + j] = brickVertices[j];
+			vertices[rectVertLength + MAXBALLS * ballVertLength + i * rectVertLength + j] = brickVertices[j];
 		}
 	}
 
@@ -143,16 +160,16 @@ int main(void)
 		indices[i] = rectIndices[i];
 	}
 
-	for (int i = 0; i < maxBalls; i++) {
+	for (int i = 0; i < MAXBALLS; i++) {
 		for (int j = 0; j < ballIndicesLength; j++) {
 			//std::cout << "WRITING VALUE " << ballIndices[j] + ballVertLength / 6 * i + rectVertLength / 6 << " TO INDICES INDEX " << rectIndicesLength + i * ballIndicesLength + j << std::endl;
 			indices[rectIndicesLength + i * ballIndicesLength + j] = ballIndices[j] + ballVertLength / 6 * i + rectVertLength / 6;
 		}
 	}
 
-	for (int i = 0; i < maxBricks; i++) {
+	for (int i = 0; i < MAXBRICKS; i++) {
 		for (int j = 0; j < rectIndicesLength; j++) {
-			indices[rectIndicesLength + maxBalls * ballIndicesLength + i * rectIndicesLength + j] = rectIndices[j] + ballVertLength / 6 * maxBalls + rectVertLength / 6 * (i + 1);
+			indices[rectIndicesLength + MAXBALLS * ballIndicesLength + i * rectIndicesLength + j] = rectIndices[j] + ballVertLength / 6 * MAXBALLS + (i+1) * rectVertLength / 6;
 		}
 	}
 
@@ -171,10 +188,10 @@ int main(void)
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (rectVertLength + maxBalls * ballVertLength + maxBricks * rectVertLength), vertices, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (rectVertLength + MAXBALLS * ballVertLength + MAXBRICKS * rectVertLength), vertices, GL_DYNAMIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * (rectIndicesLength + maxBalls * ballIndicesLength + maxBricks * rectIndicesLength), indices, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * (rectIndicesLength + MAXBALLS * ballIndicesLength + MAXBRICKS * rectIndicesLength), indices, GL_DYNAMIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -191,8 +208,10 @@ int main(void)
 	double fpsTimer[2] = { 0.0f, glfwGetTime() };
 	while (!window.shouldClose()) {
 		fpsTimer[0] = fpsTimer[1];
-		fpsTimer[1] = glfwGetTime();
+		fpsTimer[1] = fpsTimer[1];
+
 		//std::cout << "CURRENT PERFORMANCE " << fpsTimer[1] - fpsTimer[0] << " m/s per frame" << std::endl;
+
 		if (input->isKeyDown(input->SPACE)) {
 			spacePressTimer[0] = spacePressTimer[1];
 			spacePressTimer[1] = true;
@@ -208,10 +227,10 @@ int main(void)
 
 		if (spacePressTimer[1] && !spacePressTimer[0]) {
 			//std::cout << "ATTEMPTING TO CREATE NEW BALL" << std::endl;
-			if (numBalls < maxBalls) {
-				for (int i = 1; i < maxBalls + 1; i++) {
-					if (deleted[i] || objects[i] == nullptr) {
-						objects[i] = new Ball(((Player*)objects[0])->getX(), ((Player*)objects[0])->getY()+0.1f, BALLRADIUS, 45.0f, 0.03f, &(objects[0]), maxBalls, maxBricks, &(deleted[0]));
+			if (numBalls < MAXBALLS) {
+				for (int i = 1; i < MAXBALLS; i++) {
+					if (deleted[i]) {
+						objects[i] = new Ball(((Player*)objects[0])->getX(), ((Player*)objects[0])->getY()+0.1f, BALLRADIUS, 45.0f, 0.03f, objects, MAXBALLS, MAXBRICKS, deleted);
 						numBalls++;
 						deleted[i] = false;
 						//std::cout << "SUCCESS! BALL CREATED" << std::endl;
@@ -220,7 +239,7 @@ int main(void)
 				}
 			}
 			else {
-				//std::cout << "FAILED: MAX BALLS CREATED" << std::endl;
+				////std::cout << "FAILED: MAX BALLS CREATED" << std::endl;
 			}
 		}
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -237,28 +256,44 @@ int main(void)
 
 
 		//std::cout << "DRAWING BALLS" << std::endl;
-		for (int i = 1; i < maxBalls+1; i++) {
+		for (int i = 1; i < MAXBALLS+1 + MAXBRICKS; i++) {
 			if (!deleted[i] && objects[i]!= nullptr) {
+				//std::cout << "FOUND OBJECT AT " << i << ", CHECKING IF ACTIVE" << std::endl;
 				if(objects[i]->getActive()){
 					objects[i]->update(shadingBlokeInMyComputer);
 					//std::cout << "DRAWING BALL WITH INDICIAL OFFSET OF " << rectIndicesLength + i * ballIndicesLength << " AND " << ballIndicesLength << " INDICIES" << std::endl;
-					glDrawElements(GL_TRIANGLES, ballIndicesLength, GL_UNSIGNED_INT, (void*)((rectIndicesLength + (i * (ballIndicesLength)))*sizeof(GLuint)));
+					if (objects[i]->type == 0) {
+						//std::cout << "DRAWING BALL" << std::endl;
+						glDrawElements(GL_TRIANGLES, ballIndicesLength, GL_UNSIGNED_INT, (void*)((rectIndicesLength + i * ballIndicesLength) * sizeof(GLuint)));
+					}
+					else if (objects[i]->type == 2) {
+						//std::cout << "DRAWING BRICK AT " << objects[i]->getX() << "," << objects[i]->getY()<< std::endl;
+						glDrawElements(GL_TRIANGLES, rectIndicesLength, GL_UNSIGNED_INT, (void*)((rectIndicesLength + MAXBALLS * ballIndicesLength + (i-MAXBALLS) * rectIndicesLength) * sizeof(GLuint)));
+					}
 				}
 				else {
 					deleted[i] = true;
-					std::cout << "DELETED OBJECT AT " << objects[i] << " OF TYPE " << objects[i]->type << std::endl;
-					delete objects[i];
+					//std::cout << "DELETED OBJECT AT " << objects[i] << " OF TYPE " << objects[i]->type << std::endl;
+					//delete objects[i];
 					numBalls--;
 				}
 			} 
+			else if (objects[i] == nullptr) {
+				//std::cout << "OBJECT AT INDEX" << i << "IS NULL" << std::endl;
+			}
+			else if (deleted[i]) {
+				//std::cout << "OBJECT AT INDEX" << i << "IS DELETED" << std::endl;
+			}
 		}
+
+		
 		window.update();
 
 	}
+	//std::cout << "PROGRAM FINISHED" << std::endl;
 	window.destroy();
 	return 0;
 }
-
 
 
 
@@ -300,7 +335,7 @@ float* genCircleVertices(float radius, int vertArrayLength, float color[3]) {
 				vertices[index + vert * 6] = color[1];
 				break;
 			case 5:
-				vertices[index + vert * 6] = color[1];
+				vertices[index + vert * 6] = color[2];
 				break;
 			}
 			//std::cout << vertices[index + vert * 6] << ',';
@@ -348,4 +383,15 @@ float* getRectVertices(int vertArrayLength, float width, float height, float col
 		vertices[i + 21] = color[i];
 	}
 	return vertices;
+}
+
+void createBrick(float x, float y, int index, GameObject** objects, bool* deleted) {
+	if (index < MAXBRICKS) {
+		objects[1 + MAXBALLS + index] = new Brick(x, y, BRICKWIDTH, BRICKHEIGHT);
+		deleted[1 + MAXBALLS + index] = false;
+		//std::cout << "CREATED BRICK AT INDEX " << 1 + MAXBALLS + index << std::endl;
+	}
+	else {
+		//std::cout << "CREATE BRICK: INDEX OUT OF RANGE" << std::endl;
+	}
 }

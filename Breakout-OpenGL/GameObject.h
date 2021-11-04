@@ -1,3 +1,4 @@
+#pragma once
 class GameObject {
 protected:
 	float y = 0;
