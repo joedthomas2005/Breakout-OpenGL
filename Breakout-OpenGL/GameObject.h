@@ -2,34 +2,31 @@ class GameObject {
 protected:
 	float y = 0;
 	float x = 0;
-//	float* vertices = NULL;
-//	int* indices = NULL; 
+	bool isActive = true;
+
 
 public:
 	int type;
-//	int numVerts;
-//	int numIndicies;
-	bool isActive = true;
+
+	bool getActive();
+	void setActive(bool active);
 	GameObject(float x, float y);
 	~GameObject();
 	virtual void update(ShaderMan shader);
 	float getX();
 	float getY();
+	void move(float x, float y);
 };
 
 
 GameObject::GameObject(float x, float y) {
 	this->x = x;
 	this->y = y;
-//	this->numVerts = numVerts;
-//	this->numIndicies = numIndices;
-//	this->vertices = new float[numVerts];
-//	this->indices = new int[numIndices];
+
 }
 
 GameObject::~GameObject() {
-//	delete[] vertices;
-//	delete[] indices;
+
 }
 
 float GameObject::getX() {
@@ -37,5 +34,19 @@ float GameObject::getX() {
 }
 float GameObject::getY() {
 	return y;
+}
+
+bool GameObject::getActive() {
+	return isActive;
+}
+
+void GameObject::setActive(bool active) {
+	isActive = active;
+}
+
+
+void GameObject::move(float x, float y) {
+	this->x += x;
+	this->y += y;
 }
 void GameObject::update(ShaderMan shader) {};

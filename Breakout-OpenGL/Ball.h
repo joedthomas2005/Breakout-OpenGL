@@ -13,11 +13,13 @@ private:
 	float speed;
 	int xMult;
 	int yMult;
-	Player *pPlayer;
+	GameObject** objects;
+	int maxBalls;
+	int maxBricks;
 public:
 
 	float getRadius();;
-	Ball(float x, float y, float color[3], float radius, float startingAngle, float speed, Player* player);
+	Ball(float x, float y, float radius, float startingAngle, float speed, GameObject** objects, int maxBalls, int maxBricks, bool* deleted);
 	~Ball();
 	void update(ShaderMan shader);
 	
@@ -31,10 +33,10 @@ float Ball::getRadius() {
 	return radius;
 }
 
-Ball::Ball(float x, float y, float color[3], float radius, float startingAngle, float speed, Player *player) : GameObject(x,y){
+Ball::Ball(float x, float y, float radius, float startingAngle, float speed, GameObject** objects, int maxBalls, int maxBricks, bool* deleted) : GameObject(x,y){
 	type = 0;
 	this->angle = startingAngle;
-	this->pPlayer = player;
+	this->objects = objects;
 	this->xMult = 1;
 	this->yMult = 1;
 	this->speed = speed;
@@ -55,10 +57,15 @@ void Ball::update(ShaderMan shader) {
 		isActive = false;
 	}
 
-	if (y - radius <= pPlayer->getY() + pPlayer->getHeight() / 2 && (x < pPlayer->getX() + pPlayer->getWidth() / 2 && x > pPlayer->getX() - pPlayer->getWidth() / 2)) {
-		yMult = 0 - yMult;
-		y += pPlayer->getY()+pPlayer->getHeight() - (y - radius);
+	for (int i = 0; i < maxBricks + maxBalls + 1; i++) {
+		if (objects[i]->type == 1) {
+			Player* player = (Player*) objects[i];
+			if (y - radius <= player->getY() + player->getHeight() / 2 && (x < player->getX() + player->getWidth() / 2 && x > player->getX() - player->getWidth() / 2)) {
+				yMult = 0 - yMult;
+				y += player->getY() + player->getHeight() - (y - radius);
 
+			}
+		}
 	}
 	x += speed * coses[(int)angle] * xMult;
 	y += speed * sins[(int)angle] * yMult;

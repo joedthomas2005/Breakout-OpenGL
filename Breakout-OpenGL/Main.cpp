@@ -7,15 +7,15 @@
 #include "GameObject.h"
 #include "Player.h"
 #include "Ball.h"
-
+#include "Brick.h"
 float* genCircleVertices(float radius, int vertArrayLength, float color[3]);
-float* genPlayerVertices(int vertArrayLength, float width, float height, float color[3]);
+float* getRectVertices(int vertArrayLength, float width, float height, float color[3]);
 
 int main(void)
 {
-	playerIndices = new int[6]{ 0,1,3,1,2,3 };
-	playerIndicesLength = 6;
-	playerVertLength = 24;
+	rectIndices = new int[6]{ 0,1,3,1,2,3 };
+	rectIndicesLength = 6;
+	rectVertLength = 24;
 
 	ballIndices = new int[108]
 	{ 0,1,2,
@@ -58,17 +58,19 @@ int main(void)
 	ballIndicesLength = 108;
 	ballVertLength = 222;
 	
-	float playerInitLocation[3] = { 0.0f, -0.9f, 0.0f };
 	float playerColor[3] = { 1.0f,0.0f,0.0f };
-	float ballInitLocation[3] = { 0.0f, -0.8f, 0.0f };
-	float ballColor[3] = { 0.0f, 1.0f, 1.0f };
-
+	float ballColor[3] = { 0.0f, 1.0f, 0.0f };
+	float brickColor[3] = { 0.0f, 0.0f, 1.0f };
 	const float PLAYERWIDTH = 0.3f;
 	const float PLAYERHEIGHT = 0.05f;
 	const float BALLRADIUS = 0.03f;
 
+	const float BRICKWIDTH = 0.3f;
+	const float BRICKHEIGHT = 0.2f;
+	
 	float* ballVertices = genCircleVertices(BALLRADIUS, ballVertLength, ballColor);
-	float* playerVertices = genPlayerVertices(playerVertLength, PLAYERWIDTH, PLAYERHEIGHT, playerColor);
+	float* playerVertices = getRectVertices(rectVertLength, PLAYERWIDTH, PLAYERHEIGHT, playerColor);
+	float* brickVertices = getRectVertices(rectVertLength, BRICKWIDTH, BRICKHEIGHT, brickColor);
 
 	int numBalls = 0;
 	int numBlocks = 0;
@@ -96,48 +98,61 @@ int main(void)
 	ShaderMan shadingBlokeInMyComputer = ShaderMan("Shaders/vert.hlsl", "Shaders/fragShader.hlsl");
 
 	const int maxBalls = 10;
+	const int maxBricks = 10;
+	GameObject* objects[1 + maxBalls + maxBricks] = {};
 
-	GameObject* objects[1 + maxBalls] = {};
 
-
-	objects[0] = new Player(0.5f, -0.9f , playerColor, PLAYERWIDTH, PLAYERHEIGHT, input);
+	objects[0] = new Player(0.5f, -0.9f , PLAYERWIDTH, PLAYERHEIGHT, input);
 	//objects[1] = new Ball(ballInitLocation, ballColor, BALLRADIUS, 45, 0.03f, (Player*)objects[0]);
 	//numBalls++;
 
 
 	//int objectindex = 2;
-	bool* deleted = new bool[1 + maxBalls];
-	for (int i = 1; i <= maxBalls; i++) {
+	bool* deleted = new bool[1 + maxBalls + maxBricks];
+	for (int i = 1; i <= maxBricks; i++) {
 		deleted[i] = false;
 	}
 
 
 
-	float* vertices = new float[playerVertLength + maxBalls * ballVertLength];
-	int* indices = new int[playerIndicesLength + maxBalls * ballIndicesLength];
+	float* vertices = new float[rectVertLength + maxBalls * ballVertLength + maxBricks * rectVertLength];
+	int* indices = new int[rectIndicesLength + maxBalls * ballIndicesLength + maxBricks * rectIndicesLength];
 
 	int objectVertIndex = 0;
 	int objectIndicesIndex = 0;
 
-	for (int i = 0; i < playerVertLength; i++) {
+	for (int i = 0; i < rectVertLength; i++) {
 		vertices[i] = playerVertices[i];
 	}
 
 	for (int i = 0; i < maxBalls; i++) {
 		for (int j = 0; j < ballVertLength; j++) {
-			//std::cout << "WRITING VERTEX " << objects[1]->getVertices()[j] << " AT INDEX " << playerVertLength + i * ballVertLength + j << std::endl;
-			vertices[playerVertLength + i * ballVertLength + j] = ballVertices[j];
+			//std::cout << "WRITING VERTEX " << objects[1]->getVertices()[j] << " AT INDEX " << rectVertLength + i * ballVertLength + j << std::endl;
+			vertices[rectVertLength + i * ballVertLength + j] = ballVertices[j];
 		}
 	}
 
-	for (int i = 0; i < playerIndicesLength; i++) {
-		indices[i] = playerIndices[i];
+	for (int i = 0; i < maxBricks; i++) {
+		for (int j = 0; j < rectVertLength; j++) {
+			vertices[rectVertLength + maxBalls * ballVertLength + i * rectVertLength + j] = brickVertices[j];
+		}
+	}
+
+
+	for (int i = 0; i < rectIndicesLength; i++) {
+		indices[i] = rectIndices[i];
 	}
 
 	for (int i = 0; i < maxBalls; i++) {
 		for (int j = 0; j < ballIndicesLength; j++) {
-			//std::cout << "WRITING VALUE " << ballIndices[j] + ballVertLength / 6 * i + playerVertLength / 6 << " TO INDICES INDEX " << playerIndicesLength + i * ballIndicesLength + j << std::endl;
-			indices[playerIndicesLength + i * ballIndicesLength + j] = ballIndices[j] + ballVertLength / 6 * i + playerVertLength / 6;
+			//std::cout << "WRITING VALUE " << ballIndices[j] + ballVertLength / 6 * i + rectVertLength / 6 << " TO INDICES INDEX " << rectIndicesLength + i * ballIndicesLength + j << std::endl;
+			indices[rectIndicesLength + i * ballIndicesLength + j] = ballIndices[j] + ballVertLength / 6 * i + rectVertLength / 6;
+		}
+	}
+
+	for (int i = 0; i < maxBricks; i++) {
+		for (int j = 0; j < rectIndicesLength; j++) {
+			indices[rectIndicesLength + maxBalls * ballIndicesLength + i * rectIndicesLength + j] = rectIndices[j] + ballVertLength / 6 * maxBalls + rectVertLength / 6 * (i + 1);
 		}
 	}
 
@@ -156,10 +171,10 @@ int main(void)
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (playerVertLength + maxBalls * ballVertLength), vertices, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (rectVertLength + maxBalls * ballVertLength + maxBricks * rectVertLength), vertices, GL_DYNAMIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * (playerIndicesLength + maxBalls * ballIndicesLength), indices, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * (rectIndicesLength + maxBalls * ballIndicesLength + maxBricks * rectIndicesLength), indices, GL_DYNAMIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -196,7 +211,7 @@ int main(void)
 			if (numBalls < maxBalls) {
 				for (int i = 1; i < maxBalls + 1; i++) {
 					if (deleted[i] || objects[i] == nullptr) {
-						objects[i] = new Ball(((Player*)objects[0])->getX(), ((Player*)objects[0])->getY()+0.1f, ballColor, BALLRADIUS, 45.0f, 0.03f, (Player*)objects[0]);
+						objects[i] = new Ball(((Player*)objects[0])->getX(), ((Player*)objects[0])->getY()+0.1f, BALLRADIUS, 45.0f, 0.03f, &(objects[0]), maxBalls, maxBricks, &(deleted[0]));
 						numBalls++;
 						deleted[i] = false;
 						//std::cout << "SUCCESS! BALL CREATED" << std::endl;
@@ -218,16 +233,16 @@ int main(void)
 		
 		//std::cout << "DRAWING PLAYER" << std::endl;
 		objects[0]->update(shadingBlokeInMyComputer);
-		glDrawElements(GL_TRIANGLES, playerIndicesLength, GL_UNSIGNED_INT, (void*)0);
+		glDrawElements(GL_TRIANGLES, rectIndicesLength, GL_UNSIGNED_INT, (void*)0);
 
 
 		//std::cout << "DRAWING BALLS" << std::endl;
 		for (int i = 1; i < maxBalls+1; i++) {
 			if (!deleted[i] && objects[i]!= nullptr) {
-				if(objects[i]->isActive){
+				if(objects[i]->getActive()){
 					objects[i]->update(shadingBlokeInMyComputer);
-					//std::cout << "DRAWING BALL WITH INDICIAL OFFSET OF " << playerIndicesLength + i * ballIndicesLength << " AND " << ballIndicesLength << " INDICIES" << std::endl;
-					glDrawElements(GL_TRIANGLES, ballIndicesLength, GL_UNSIGNED_INT, (void*)((playerIndicesLength + (i * (ballIndicesLength)))*sizeof(GLuint)));
+					//std::cout << "DRAWING BALL WITH INDICIAL OFFSET OF " << rectIndicesLength + i * ballIndicesLength << " AND " << ballIndicesLength << " INDICIES" << std::endl;
+					glDrawElements(GL_TRIANGLES, ballIndicesLength, GL_UNSIGNED_INT, (void*)((rectIndicesLength + (i * (ballIndicesLength)))*sizeof(GLuint)));
 				}
 				else {
 					deleted[i] = true;
@@ -297,7 +312,7 @@ float* genCircleVertices(float radius, int vertArrayLength, float color[3]) {
 }
 
 
-float* genPlayerVertices(int vertArrayLength, float width, float height, float color[3]) {
+float* getRectVertices(int vertArrayLength, float width, float height, float color[3]) {
 	float* vertices = new float[vertArrayLength];
 	float blVert[3] = { 0 - width / 2.0f, 0 - height / 2.0f, 1.0f };
 	float tlVert[3] = { 0 - width / 2.0f, 0 + height / 2.0f, 1.0f };
