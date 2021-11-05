@@ -1,6 +1,14 @@
 ﻿  Main.cpp
-c:\users\joejo\c++\breakout-opengl\breakout-opengl\breakout-opengl\main.cpp(91): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\joejo\c++\breakout-opengl\breakout-opengl\breakout-opengl\main.cpp(92): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\joejo\c++\breakout-opengl\breakout-opengl\breakout-opengl\main.cpp(118): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\joejo\c++\breakout-opengl\breakout-opengl\breakout-opengl\main.cpp(125): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-  Breakout-OpenGL.vcxproj -> C:\Users\JoeJo\C++\Breakout-OpenGL\breakout-opengl\x64\Debug\Breakout-OpenGL.exe
+c:\program files (x86)\windows kits\10\include\10.0.17134.0\shared\minwindef.h(130): warning C4005: 'APIENTRY': macro redefinition
+  h:\c++ projects\breakout-opengl\breakout-opengl\libraries\include\glad\glad.h(32): note: see previous definition of 'APIENTRY'
+h:\c++ projects\breakout-opengl\breakout-opengl\ball.h(99): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+h:\c++ projects\breakout-opengl\breakout-opengl\ball.h(103): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+h:\c++ projects\breakout-opengl\breakout-opengl\ball.h(109): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+h:\c++ projects\breakout-opengl\breakout-opengl\ball.h(113): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+h:\c++ projects\breakout-opengl\breakout-opengl\main.cpp(34): warning C4244: 'argument': conversion from 'double' to 'size_t', possible loss of data
+h:\c++ projects\breakout-opengl\breakout-opengl\main.cpp(34): warning C4056: overflow in floating-point constant arithmetic
+h:\c++ projects\breakout-opengl\breakout-opengl\main.cpp(94): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+h:\c++ projects\breakout-opengl\breakout-opengl\main.cpp(95): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+h:\c++ projects\breakout-opengl\breakout-opengl\main.cpp(121): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+h:\c++ projects\breakout-opengl\breakout-opengl\main.cpp(128): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Breakout-OpenGL.vcxproj -> H:\C++ Projects\breakout-opengl\x64\Debug\Breakout-OpenGL.exe

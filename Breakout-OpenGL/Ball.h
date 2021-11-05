@@ -88,6 +88,7 @@ void Ball::update(ShaderMan shader) {
 				float ballTop = y + radius;
 				float ballBottom = y - radius;
 				bool collisionCalculated = false;
+
 				if (((brickLeft < ballRight && ballRight < brickRight) || 
 					(brickLeft < ballLeft && ballLeft < brickRight)) &&
 					((brickBottom < ballTop && ballTop < brickTop) ||
@@ -95,21 +96,21 @@ void Ball::update(ShaderMan shader) {
 				{
 					std::cout << "BALL HIT BRICK" << std::endl;
 					if (y - radius < brick->getY() - brick->getHeight() / 2) {
-						yMult = 0 - abs(yMult);
+						yMult = 0 - abs(float(yMult));
 						collisionCalculated = true;
 					}
 					else {
-						yMult = abs(yMult);
+						yMult = abs(float(yMult));
 						collisionCalculated = true;
 					}
 					
 					if (!collisionCalculated) {
 						if (x - radius < brick->getX() - brick->getWidth() / 2) {
-							xMult = 0 - abs(xMult);
+							xMult = 0 - abs((float)xMult);
 							collisionCalculated = true;
 						}
 						else {
-							xMult = abs(xMult);
+							xMult = abs(float(xMult));
 							collisionCalculated = true;
 						}
 					}
