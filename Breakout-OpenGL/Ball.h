@@ -1,5 +1,8 @@
 #pragma once
 #include<cmath>
+#include<vector>
+#include<algorithm>
+using std::vector;
 const double PI = atan(1) * 4;
 float sins[361] = {};
 float coses[361] = {};
@@ -94,25 +97,14 @@ void Ball::update(ShaderMan shader) {
 					((brickBottom < ballTop && ballTop < brickTop) ||
 					(brickBottom < ballBottom && ballBottom < brickTop)))
 				{
-					std::cout << "BALL HIT BRICK" << std::endl;
-					if (y - radius < brick->getY() - brick->getHeight() / 2) {
-						yMult = 0 - abs(float(yMult));
-						collisionCalculated = true;
+					float distancesvars[4] = { brickRight - ballLeft, ballRight - brickLeft, brickTop - ballBottom, ballTop - brickBottom };
+					vector<float> distances;
+					for (float var : distancesvars) {
+						distances.push_back(var);
 					}
-					else {
-						yMult = abs(float(yMult));
-						collisionCalculated = true;
-					}
-					
-					if (!collisionCalculated) {
-						if (x - radius < brick->getX() - brick->getWidth() / 2) {
-							xMult = 0 - abs((float)xMult);
-							collisionCalculated = true;
-						}
-						else {
-							xMult = abs(float(xMult));
-							collisionCalculated = true;
-						}
+					std::sort(distances.begin(), distances.end());
+					for (int i = 0; i < distances.size(); i++) {
+						std::cout << distances[i] << std::endl;
 					}
 					brick->setActive(false);
 				}

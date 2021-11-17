@@ -31,7 +31,7 @@ const int WINDOWHEIGHT = 800;
 
 int main(void)
 {
-	ShowWindow(GetConsoleWindow(), SW_HIDE);
+	ShowWindow(GetConsoleWindow(), SW_SHOW);
 	rectIndices = new int[6]{ 0,1,3,1,2,3 };
 	rectIndicesLength = 6;
 	rectVertLength = 24;
